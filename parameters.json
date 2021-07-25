@@ -30,9 +30,5 @@
     {
         "ParameterKey": "Instance",
         "ParameterValue": "t3.medium"    
-    },
-    {
-        "ParameterKey": "KeyName",
-        "ParameterValue": "excerciseKey"         
     }
 ]

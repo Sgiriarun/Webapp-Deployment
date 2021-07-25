@@ -40,10 +40,6 @@ Parameters:
         Description: Type of instance based on requirement
         Type: String     
 
-    KeyName:
-        Description: Amazon EC2 KeyPair
-        Type: AWS::EC2::KeyPair::KeyName
-
 Resources:
 
     VPC: 
@@ -271,10 +267,6 @@ Resources:
                 FromPort: 80
                 ToPort: 80
                 CidrIp: 0.0.0.0/0
-            -   IpProtocol: tcp
-                FromPort: 22
-                ToPort: 22
-                CidrIp: 0.0.0.0/0
             SecurityGroupEgress:
             -   IpProtocol: tcp
                 FromPort: 0
@@ -296,7 +288,6 @@ Resources:
                     unzip -o udacity.zip
                     
             ImageId: !Ref AMItoUse
-            KeyName: !Ref KeyName
             IamInstanceProfile: !Ref InstanceProfileRole
             SecurityGroups:
             -   Ref: WebServerSecGroup
@@ -417,4 +408,9 @@ Outputs:
     Instance:
         Value: !Ref Instance
         Export:
-          Name: !Sub ${EnvironmentName}-Ins         
+          Name: !Sub ${EnvironmentName}-Ins    
+
+    LoadBalancer:
+        Description: Load balancer public
+        Value:
+            Fn::Join: ["", ["http://", !GetAtt WebAppLB.DNSName]]
