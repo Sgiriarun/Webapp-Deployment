@@ -1,0 +1,56 @@
+Parameters:
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+
+  KeyName:
+    Description: Amazon EC2 KeyPair
+    Type: AWS::EC2::KeyPair::KeyName
+
+  MyIP:
+    Description: paste your ip here(IPv4) for ssh, i gave default 0.0.0.0/0 
+    Type: String
+
+
+Mappings:
+  RegionMap:
+    us-west-2:
+      AMI: ami-0dc8f589abe99f538
+    
+Resources:
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open Port 22 for ssh
+      VpcId: 
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-VPCID"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: !Ref MyIP
+
+  BastionEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: 
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-Ins"
+      ImageId:
+        Fn::FindInMap:
+          - RegionMap
+          - !Ref AWS::Region
+          - AMI
+      Tags:
+        - Key: Name
+          Value: "Bastion Host"
+      KeyName: !Ref KeyName
+      NetworkInterfaces:
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          GroupSet:
+            - Ref: "MySecurityGroup"
+          SubnetId: 
+            Fn::ImportValue: !Sub "${EnvironmentName}-PUB1-SN"

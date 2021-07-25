@@ -1,0 +1,14 @@
+[
+    {
+        "ParameterKey": "EnvironmentName",
+        "ParameterValue": "Arun-project"
+    },
+    {
+        "ParameterKey": "KeyName",
+        "ParameterValue": "jumpbox-key"        
+    },
+    {
+        "ParameterKey": "MyIP",
+        "ParameterValue": "0.0.0.0/0"         
+    }
+]
